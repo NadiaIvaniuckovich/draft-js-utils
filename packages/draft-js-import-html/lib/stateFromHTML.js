@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = stateFromHTML;
 
-var _draftJsImportElement = require('draft-js-import-element');
+var _draftJsImportElement = require('../../draft-js-import-element');
 
 var _parseHTML = require('./parseHTML');
 
