@@ -407,9 +407,9 @@ class MarkupGenerator {
         if (
           entity != null &&
           this.options.entityStyleFn &&
-          (entityStyle = this.options.entityStyleFn(entity))
+          (entityStyle = this.options.entityStyleFn(entity, content))
         ) {
-          let {element, attributes, style} = entityStyle;
+          let {element, attributes, style, content} = entityStyle;
           if (element == null) {
             element = 'span';
           }
