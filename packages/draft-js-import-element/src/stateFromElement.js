@@ -3,8 +3,8 @@
 import replaceTextWithMeta from './lib/replaceTextWithMeta';
 import {CharacterMetadata, ContentBlock, ContentState, genKey} from 'draft-js';
 import {List, Map, OrderedSet, Repeat, Seq} from 'immutable';
-import {BLOCK_TYPE, ENTITY_TYPE, INLINE_STYLE} from 'draft-js-utils';
-import {NODE_TYPE_ELEMENT, NODE_TYPE_TEXT} from 'synthetic-dom';
+import {BLOCK_TYPE, ENTITY_TYPE, INLINE_STYLE} from '../../draft-js-utils';
+import {NODE_TYPE_ELEMENT, NODE_TYPE_TEXT} from '../../synthetic-dom';
 import {
   INLINE_ELEMENTS,
   SPECIAL_ELEMENTS,
@@ -344,17 +344,22 @@ class ContentGenerator {
     let entityKey = block.entityStack.slice(-1)[0];
     let {customInlineFn} = this.options;
     let customInline = customInlineFn ? customInlineFn(element, this.inlineCreators) : null;
-    if (customInline != null) {
-      switch (customInline.type) {
-        case 'STYLE': {
-          style = style.add(customInline.style);
-          break;
+    if (customInline != null && customInline.length > 0) {
+      customInline.forEach(customInlinePiece => {
+        switch (customInlinePiece.type) {
+          case 'STYLE':
+          {
+            style = style.add(customInlinePiece.style);
+            break;
+          }
+          case 'ENTITY':
+          {
+            entityKey = customInlinePiece.entityKey;
+            break;
+          }
         }
-        case 'ENTITY': {
-          entityKey = customInline.entityKey;
-          break;
-        }
-      }
+      })
+
     } else {
       style = addStyleFromTagName(style, tagName, this.options.elementStyles);
       if (ElementToEntity.hasOwnProperty(tagName)) {
