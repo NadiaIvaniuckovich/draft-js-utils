@@ -1,7 +1,7 @@
 // @flow
 const {describe, it, expect} = global;
 import stateFromElement from '../stateFromElement';
-import {TextNode, ElementNode} from 'synthetic-dom';
+import {TextNode, ElementNode} from '../../synthetic-dom';
 import {convertToRaw} from 'draft-js';
 import fs from 'fs';
 import {join} from 'path';

@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _syntheticDom = require('synthetic-dom');
+var _syntheticDom = require('../../synthetic-dom');
 
 var hasOwnProperty = Object.prototype.hasOwnProperty; /**
                                                        * Ported from:

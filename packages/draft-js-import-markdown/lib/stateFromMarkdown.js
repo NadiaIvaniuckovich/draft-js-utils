@@ -9,7 +9,7 @@ var _MarkdownParser = require('./MarkdownParser');
 
 var _MarkdownParser2 = _interopRequireDefault(_MarkdownParser);
 
-var _draftJsImportElement = require('draft-js-import-element');
+var _draftJsImportElement = require('../../draft-js-import-element');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 

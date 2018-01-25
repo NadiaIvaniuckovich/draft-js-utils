@@ -18,9 +18,9 @@ var _draftJs = require('draft-js');
 
 var _immutable = require('immutable');
 
-var _draftJsUtils = require('draft-js-utils');
+var _draftJsUtils = require('../../draft-js-utils');
 
-var _syntheticDom = require('synthetic-dom');
+var _syntheticDom = require('../../synthetic-dom');
 
 var _Constants = require('./lib/Constants');
 
