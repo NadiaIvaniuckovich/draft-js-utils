@@ -22,7 +22,8 @@ var BLOCK_TYPE = exports.BLOCK_TYPE = {
 
 var ENTITY_TYPE = exports.ENTITY_TYPE = {
   LINK: 'LINK',
-  IMAGE: 'IMAGE'
+  IMAGE: 'IMAGE',
+  EMBED: 'embed'
 };
 
 var INLINE_STYLE = exports.INLINE_STYLE = {

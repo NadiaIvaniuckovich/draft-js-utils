@@ -15,8 +15,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
+var defaultOptions = {};
+
 function stateFromHTML(html, options) {
-  var _ref = options || {},
+  var _ref = options || defaultOptions,
       parser = _ref.parser,
       otherOptions = _objectWithoutProperties(_ref, ['parser']);
 

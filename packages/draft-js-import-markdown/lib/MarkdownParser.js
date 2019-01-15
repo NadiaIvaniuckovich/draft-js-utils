@@ -38,7 +38,8 @@ var defaults = {
   silent: false,
   langPrefix: 'lang-',
   renderer: new Renderer(),
-  xhtml: false
+  xhtml: false,
+  atomicImages: false
 };
 
 /**
@@ -95,7 +96,7 @@ block.gfm.paragraph = replace(block.paragraph)('(?!', '(?!' + block.gfm.fences.s
 function Lexer(options) {
   this.tokens = [];
   this.tokens.links = {};
-  this.options = assign({}, options || defaults);
+  this.options = options ? assign({}, defaults, options) : assign({}, defaults);
   this.rules = block.normal;
 
   if (this.options.gfm) {
@@ -361,7 +362,7 @@ var inline = {
 };
 
 inline._inside = /(?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*/;
-inline._href = /\s*<?([\s\S]*)>?(?:\s+['"]([\s\S]*?)['"])?\s*/;
+inline._href = /\s*(<(?:\\[<>]?|[^\s<>\\])*>|(?:\\[()]?|\([^\s\x00-\x1f\\]*\)|[^\s\x00-\x1f()\\])*?)/;
 
 inline.link = replace(inline.link)('inside', inline._inside)('href', inline._href)();
 
@@ -562,12 +563,14 @@ function Renderer(options) {
 }
 
 Renderer.prototype.code = function (text, lang) {
-  var attributes = [];
+  var codeAttrs = [];
+  var preAttrs = [];
   if (lang) {
-    attributes.push({ name: 'class', value: this.options.langPrefix + lang });
+    codeAttrs.push({ name: 'class', value: this.options.langPrefix + lang });
+    preAttrs.push({ name: 'data-language', value: lang });
   }
-  var codeNode = new _syntheticDom.ElementNode('code', attributes, [new _syntheticDom.TextNode(text)]);
-  return new _syntheticDom.ElementNode('pre', [], [codeNode]);
+  var codeNode = new _syntheticDom.ElementNode('code', codeAttrs, [new _syntheticDom.TextNode(text)]);
+  return new _syntheticDom.ElementNode('pre', preAttrs, [codeNode]);
 };
 
 Renderer.prototype.blockquote = function (childNode) {
@@ -635,7 +638,13 @@ Renderer.prototype.image = function (href, title, alt) {
   if (alt) {
     attributes.push({ name: 'alt', value: alt });
   }
-  return new _syntheticDom.ElementNode('img', attributes, _syntheticDom.SELF_CLOSING);
+  var img = new _syntheticDom.ElementNode('img', attributes, _syntheticDom.SELF_CLOSING);
+  // Wrap the image in a <figure> if we want "atomic" images.
+  if (this.options.atomicImages) {
+    return new _syntheticDom.ElementNode('figure', [], [img]);
+  } else {
+    return img;
+  }
 };
 
 Renderer.prototype.text = function (childNode) {

@@ -37,9 +37,20 @@ var SELF_CLOSING = exports.SELF_CLOSING = {
   wbr: true
 };
 
-var Node = exports.Node = function Node() {
-  _classCallCheck(this, Node);
-};
+var Node = exports.Node = function () {
+  function Node() {
+    _classCallCheck(this, Node);
+  }
+
+  _createClass(Node, [{
+    key: 'toString',
+    value: function toString(isXHTML) {
+      return isXHTML ? '' : '';
+    }
+  }]);
+
+  return Node;
+}();
 
 var TextNode = exports.TextNode = function (_Node) {
   _inherits(TextNode, _Node);
@@ -55,9 +66,12 @@ var TextNode = exports.TextNode = function (_Node) {
     return _this;
   }
 
+  // eslint-disable-next-line no-unused-vars
+
+
   _createClass(TextNode, [{
     key: 'toString',
-    value: function toString() {
+    value: function toString(isXHTML) {
       return escape(this.nodeValue);
     }
   }]);
@@ -95,16 +109,12 @@ var ElementNode = exports.ElementNode = function (_Node2) {
   _createClass(ElementNode, [{
     key: 'appendChild',
     value: function appendChild(node) {
-      if (node.nodeType === NODE_TYPE_FRAGMENT) {
-        if (node.childNodes != null) {
-          var _childNodes;
+      if (node.nodeType === NODE_TYPE_FRAGMENT && node.childNodes) {
+        var _childNodes;
 
-          // $FlowIssue - Flow doesn't realize that node is a FragmentNode.
-          var childNodes = node.childNodes;
-          (_childNodes = this.childNodes).push.apply(_childNodes, _toConsumableArray(childNodes));
-        }
+        this.childNodes && (_childNodes = this.childNodes).push.apply(_childNodes, _toConsumableArray(node.childNodes));
       } else {
-        this.childNodes.push(node);
+        this.childNodes && this.childNodes.push(node);
       }
     }
   }, {
@@ -150,9 +160,9 @@ var ElementNode = exports.ElementNode = function (_Node2) {
       if (this._isSelfClosing) {
         return '<' + this._name + attrString + (isXHTML ? '/>' : '>');
       }
-      var childNodes = this.childNodes.map(function (node) {
+      var childNodes = this.childNodes ? this.childNodes.map(function (node) {
         return node.toString(isXHTML);
-      }).join('');
+      }).join('') : '';
       return '<' + this._name + attrString + '>' + childNodes + '</' + this._name + '>';
     }
   }, {
@@ -189,24 +199,21 @@ var FragmentNode = exports.FragmentNode = function (_Node3) {
   _createClass(FragmentNode, [{
     key: 'appendChild',
     value: function appendChild(node) {
-      if (node.nodeType === NODE_TYPE_FRAGMENT) {
-        if (node.childNodes != null) {
-          var _childNodes2;
+      if (node.nodeType === NODE_TYPE_FRAGMENT && node.childNodes) {
+        var _childNodes2;
 
-          // $FlowIssue - Flow doesn't realize that node is a FragmentNode.
-          var childNodes = node.childNodes;
-          (_childNodes2 = this.childNodes).push.apply(_childNodes2, _toConsumableArray(childNodes));
-        }
+        this.childNodes && (_childNodes2 = this.childNodes).push.apply(_childNodes2, _toConsumableArray(node.childNodes));
       } else {
-        this.childNodes.push(node);
+        this.childNodes && this.childNodes.push(node);
       }
     }
   }, {
     key: 'toString',
     value: function toString(isXHTML) {
-      return this.childNodes.map(function (node) {
+      var childNodes = this.childNodes;
+      return childNodes ? childNodes.map(function (node) {
         return node.toString(isXHTML);
-      }).join('');
+      }).join('') : '';
     }
   }]);
 

@@ -23,11 +23,16 @@ var BOLD = _draftJsUtils.INLINE_STYLE.BOLD,
 
 var CODE_INDENT = '    ';
 
+var defaultOptions = {
+  gfm: false
+};
+
 var MarkupGenerator = function () {
-  function MarkupGenerator(contentState) {
+  function MarkupGenerator(contentState, options) {
     _classCallCheck(this, MarkupGenerator);
 
     this.contentState = contentState;
+    this.options = options || defaultOptions;
   }
 
   _createClass(MarkupGenerator, [{
@@ -130,7 +135,14 @@ var MarkupGenerator = function () {
         case _draftJsUtils.BLOCK_TYPE.CODE:
           {
             this.insertLineBreaks(1);
-            this.output.push(CODE_INDENT + this.renderBlockContent(block) + '\n');
+            if (this.options.gfm) {
+              var language = block.getData() && block.getData().get('language') ? block.getData().get('language') : '';
+              this.output.push('```' + language + '\n');
+              this.output.push(this.renderBlockContent(block) + '\n');
+              this.output.push('```\n');
+            } else {
+              this.output.push(CODE_INDENT + this.renderBlockContent(block) + '\n');
+            }
             break;
           }
         default:
@@ -172,9 +184,11 @@ var MarkupGenerator = function () {
     }
   }, {
     key: 'insertLineBreaks',
-    value: function insertLineBreaks() {
+    value: function insertLineBreaks(n) {
       if (this.currentBlock > 0) {
-        this.output.push('\n');
+        for (var i = 0; i < n; i++) {
+          this.output.push('\n');
+        }
       }
     }
   }, {
@@ -205,7 +219,18 @@ var MarkupGenerator = function () {
           if (!text) {
             return '';
           }
-          var content = encodeContent(text);
+          var content = text;
+          // Don't encode any text inside a code block.
+          if (blockType === _draftJsUtils.BLOCK_TYPE.CODE) {
+            return content;
+          }
+          // NOTE: We attempt some basic character escaping here, although
+          // I don't know if escape sequences are really valid in markdown,
+          // there's not a canonical spec to lean on.
+          if (style.has(CODE)) {
+            return '`' + encodeCode(content) + '`';
+          }
+          content = encodeContent(text);
           if (style.has(BOLD)) {
             content = '**' + content + '**';
           }
@@ -220,15 +245,12 @@ var MarkupGenerator = function () {
             // TODO: encode `~`?
             content = '~~' + content + '~~';
           }
-          if (style.has(CODE)) {
-            content = blockType === _draftJsUtils.BLOCK_TYPE.CODE ? content : '`' + content + '`';
-          }
           return content;
         }).join('');
         var entity = entityKey ? contentState.getEntity(entityKey) : null;
         if (entity != null && entity.getType() === _draftJsUtils.ENTITY_TYPE.LINK) {
           var data = entity.getData();
-          var url = data.url || '';
+          var url = data.href || data.url || '';
           var title = data.title ? ' "' + escapeTitle(data.title) + '"' : '';
           return '[' + content + '](' + encodeURL(url) + title + ')';
         } else if (entity != null && entity.getType() === _draftJsUtils.ENTITY_TYPE.IMAGE) {
@@ -236,6 +258,8 @@ var MarkupGenerator = function () {
           var src = _data.src || '';
           var alt = _data.alt ? '' + escapeTitle(_data.alt) : '';
           return '![' + alt + '](' + encodeURL(src) + ')';
+        } else if (entity != null && entity.getType() === _draftJsUtils.ENTITY_TYPE.EMBED) {
+          return entity.getData().url || content;
         } else {
           return content;
         }
@@ -260,6 +284,10 @@ function encodeContent(text) {
   return text.replace(/[*_`]/g, '\\$&');
 }
 
+function encodeCode(text) {
+  return text.replace(/`/g, '\\`');
+}
+
 // Encode chars that would normally be allowed in a URL but would conflict with
 // our markdown syntax: `[foo](http://foo/)`
 function encodeURL(url) {
@@ -271,6 +299,6 @@ function escapeTitle(text) {
   return text.replace(/"/g, '\\"');
 }
 
-function stateToMarkdown(content) {
-  return new MarkupGenerator(content).generate();
+function stateToMarkdown(content, options) {
+  return new MarkupGenerator(content, options).generate();
 }
