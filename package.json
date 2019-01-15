@@ -1,5 +1,6 @@
 {
   "name": "draft-js-utils",
+  "version": "1.2.1",
   "scripts": {
     "build": "lerna run build",
     "watch": "lerna run --parallel watch",
