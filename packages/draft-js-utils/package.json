@@ -8,7 +8,7 @@
     "watch": "babel src --watch --out-dir lib --ignore \"_*\""
   },
   "peerDependencies": {
-    "draft-js": ">=0.10.0",
+    "draft-js": "git+https://github.com/NadiaIvaniuckovich/draft-js.git#9bbd31b",
     "immutable": "3.x.x"
   },
   "keywords": [
