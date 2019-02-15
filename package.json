@@ -11,7 +11,7 @@
     "test-src": "jest"
   },
   "dependencies": {
-    "draft-js": "^0.10.1",
+    "draft-js": "git+https://github.com/NadiaIvaniuckovich/draft-js.git#9bbd31b",
     "immutable": "3.x.x"
   },
   "devDependencies": {
