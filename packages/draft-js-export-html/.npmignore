@@ -2,3 +2,6 @@ _*
 flow-typed
 src
 test
+.idea
+.github
+.git

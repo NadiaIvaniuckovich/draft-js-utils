@@ -26,7 +26,7 @@ var _styleToCSS = require('./helpers/styleToCSS');
 
 var _styleToCSS2 = _interopRequireDefault(_styleToCSS);
 
-var _draftJsUtils = require('../../draft-js-utils');
+var _draftJsUtils = require('draft-js-utils');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 

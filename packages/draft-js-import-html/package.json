@@ -1,6 +1,6 @@
 {
   "name": "draft-js-import-html",
-  "version": "1.3.3",
+  "version": "1.3.3-custom",
   "description": "DraftJS: Import HTML to ContentState",
   "main": "lib/main.js",
   "typings": "typings/index.d.ts",
@@ -10,10 +10,10 @@
     "watch": "babel src --watch --out-dir lib --ignore \"_*\""
   },
   "dependencies": {
-    "draft-js-import-element": "^1.3.3"
+    "draft-js-import-element": "1.3.3-custom"
   },
   "peerDependencies": {
-    "draft-js": "git+https://github.com/NadiaIvaniuckovich/draft-js.git#db4ef06",
+    "draft-js": "0.10.5-custom",
     "immutable": "3.x.x"
   },
   "keywords": [
